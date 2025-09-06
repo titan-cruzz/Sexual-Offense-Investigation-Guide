@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* App base styles */
+html, body, #root { height: 100%; }
+
+/* Smooth fonts */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }

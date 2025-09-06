@@ -1,4 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+
+// Safe rendering of judgementAnalysis to avoid raw HTML injection
+const SafeHTML = ({ html }) => {
+  if (!html) return null;
+  // Optionally: basic allowlist could be applied here.
+  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+};
 
 // Main App Component
 const App = () => {
@@ -314,66 +323,100 @@ const App = () => {
 
   // UI Components
   const HomeView = () => (
-    <div className="flex flex-col items-center justify-center p-8 bg-gray-900 min-h-screen text-white">
-      <div className="text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight mb-4 text-rose-400">AI-Powered Investigation Guide</h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
+    <div className="flex flex-col items-center justify-center p-8 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 min-h-screen text-white">
+      <div className="text-center max-w-4xl">
+        <div className="mb-8">
+          <svg className="w-20 h-20 mx-auto mb-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h1 className="text-6xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            AI-Powered Investigation Guide
+          </h1>
+        </div>
+        <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
           A specialized digital assistant to strengthen sexual offence investigations by ensuring legal compliance, integrating judicial guidance, and improving conviction rates.
         </p>
-        <button
-          onClick={() => setView('newCaseForm')}
-          className="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300 transform hover:scale-105 shadow-lg"
-        >
-          Start a New Case
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={() => setView('newCaseForm')}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center justify-center"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Start a New Case
+          </button>
+          <button
+            onClick={() => alert('Feature coming soon!')}
+            className="border-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            View Existing Cases
+          </button>
+        </div>
       </div>
     </div>
   );
 
   const NewCaseFormView = () => (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
-      <div className="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">New Sexual Offence Case</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 p-4">
+      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-white/20">
+        <div className="text-center mb-6">
+          <svg className="w-16 h-16 mx-auto mb-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <h2 className="text-3xl font-bold text-white mb-2">New Sexual Offence Case</h2>
+          <p className="text-gray-300">Enter the case details to generate an investigation guide</p>
+        </div>
         <form onSubmit={handleNewCase} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <label htmlFor="firNumber" className="block text-sm font-medium text-gray-300">FIR Number</label>
-              <input type="text" id="firNumber" name="firNumber" required className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-rose-500 focus:border-rose-500" />
+              <label htmlFor="firNumber" className="block text-sm font-medium text-gray-200">FIR Number</label>
+              <input type="text" id="firNumber" name="firNumber" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter FIR Number" />
             </div>
             <div>
-              <label htmlFor="station" className="block text-sm font-medium text-gray-300">Police Station</label>
-              <input type="text" id="station" name="station" required className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-rose-500 focus:border-rose-500" />
+              <label htmlFor="station" className="block text-sm font-medium text-gray-200">Police Station</label>
+              <input type="text" id="station" name="station" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Police Station" />
             </div>
             <div>
-              <label htmlFor="victimName" className="block text-sm font-medium text-gray-300">Victim's Name</label>
-              <input type="text" id="victimName" name="victimName" required className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-rose-500 focus:border-rose-500" />
+              <label htmlFor="victimName" className="block text-sm font-medium text-gray-200">Victim's Name</label>
+              <input type="text" id="victimName" name="victimName" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Victim's Name" />
             </div>
             <div>
-              <label htmlFor="accusedName" className="block text-sm font-medium text-gray-300">Accused's Name</label>
-              <input type="text" id="accusedName" name="accusedName" required className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-rose-500 focus:border-rose-500" />
+              <label htmlFor="accusedName" className="block text-sm font-medium text-gray-200">Accused's Name</label>
+              <input type="text" id="accusedName" name="accusedName" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Accused's Name" />
             </div>
             <div>
-              <label htmlFor="dateOfOffence" className="block text-sm font-medium text-gray-300">Date of Offence</label>
-              <input type="date" id="dateOfOffence" name="dateOfOffence" required className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-rose-500 focus:border-rose-500" />
+              <label htmlFor="dateOfOffence" className="block text-sm font-medium text-gray-200">Date of Offence</label>
+              <input type="date" id="dateOfOffence" name="dateOfOffence" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" />
             </div>
             <div>
-              <label htmlFor="sections" className="block text-sm font-medium text-gray-300">Sections of Law (comma-separated, e.g., BNS 69, POCSO Act 3)</label>
-              <input type="text" id="sections" name="sections" required className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:ring-rose-500 focus:border-rose-500" placeholder="e.g. BNS 69, POCSO Act 3, IT Act 67B" />
+              <label htmlFor="sections" className="block text-sm font-medium text-gray-200">Sections of Law</label>
+              <input type="text" id="sections" name="sections" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="e.g. BNS 69, POCSO Act 3, IT Act 67B" />
             </div>
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-lg font-medium text-white bg-rose-600 hover:bg-rose-700 transition-colors duration-300 disabled:opacity-50"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 transform hover:scale-105"
           >
+            {loading ? (
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            )}
             {loading ? 'Generating...' : 'Generate Investigation Guide'}
           </button>
           <button
             type="button"
             onClick={() => setView('home')}
-            className="w-full text-center py-2 text-sm text-gray-400 hover:text-white transition-colors duration-300"
+            className="w-full text-center py-2 text-sm text-gray-300 hover:text-white transition-colors duration-300"
           >
-            Cancel
+            ← Back to Home
           </button>
         </form>
       </div>
@@ -381,26 +424,38 @@ const App = () => {
   );
 
   const CaseView = () => (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white p-8">
       <div className="flex items-center mb-6">
-        <button onClick={() => setView('home')} className="flex items-center text-gray-400 hover:text-rose-400 transition-colors duration-200">
+        <button onClick={() => setView('home')} className="flex items-center text-gray-300 hover:text-blue-400 transition-colors duration-200 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Back to Home
         </button>
       </div>
 
-      <div className="bg-gray-800 p-8 rounded-xl shadow-2xl">
-        <h2 className="text-3xl font-bold text-white mb-2">Case Details</h2>
-        <p className="text-lg text-rose-400 mb-6">FIR No. {currentCase.firNumber}</p>
+      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-white/20">
+        <div className="flex items-center mb-6">
+          <svg className="w-10 h-10 text-blue-400 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <div>
+            <h2 className="text-3xl font-bold text-white mb-2">Case Details</h2>
+            <p className="text-lg text-blue-400">FIR No. {currentCase.firNumber}</p>
+          </div>
+        </div>
         <div className="grid md:grid-cols-2 gap-8">
 
           {/* AI-Generated Investigation Steps */}
-          <div className="bg-gray-700 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4 text-white">AI-Powered Investigation Steps</h3>
+          <div className="bg-white/10 p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+            <h3 className="text-xl font-semibold mb-4 text-white flex items-center">
+              <svg className="w-6 h-6 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+              AI-Powered Investigation Steps
+            </h3>
             <ul className="space-y-3">
               {currentCase.investigationSteps.length > 0 ? (
                 currentCase.investigationSteps.map((step, index) => (
-                  <li key={index} className="flex items-start text-gray-300">
+                  <li key={index} className="flex items-start text-gray-200">
                     <svg className="flex-shrink-0 w-6 h-6 text-green-400 mr-3 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
                     <span>{step}</span>
                   </li>
@@ -412,7 +467,7 @@ const App = () => {
           </div>
 
           {/* Compliance Checklist */}
-          <div className="bg-gray-700 p-6 rounded-lg">
+          <div className="bg-white/10 p-6 rounded-xl border border-white/20 backdrop-blur-sm">
             <h3 className="text-xl font-semibold mb-4 text-white">Legal Compliance Checklist</h3>
             <ul className="space-y-3">
               {Object.keys(currentCase.complianceChecklist).map(key => {
@@ -444,15 +499,19 @@ const App = () => {
         <div className="mt-8 space-y-8">
 
           {/* Medical Report Submission */}
-          <div className="bg-gray-800 p-6 rounded-xl shadow-inner">
+          <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl">
             <h3 className="text-xl font-semibold mb-4 text-white">Medical Report Submission</h3>
-            <p className="text-gray-400 mb-4">Upload the medical examination report for AI analysis.</p>
-            <input type="file" onChange={handleMedicalReportUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100" />
-            {loading && <p className="mt-4 text-rose-400">Analyzing report...</p>}
+            <p className="text-gray-300 mb-4">Upload the medical examination report for AI analysis.</p>
+            <input
+              type="file"
+              onChange={handleMedicalReportUpload}
+              className="block w-full text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer"
+            />
+            {loading && <p className="mt-4 text-blue-300">Analyzing report...</p>}
             {medicalReportContent && (
-              <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-                <p className="font-bold text-lg mb-2 text-rose-300">AI Analysis of Medical Report</p>
-                <p className="text-gray-300">{medicalReportContent.analysis.summary}</p>
+              <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
+                <p className="font-bold text-lg mb-2 text-blue-300">AI Analysis of Medical Report</p>
+                <p className="text-gray-200">{medicalReportContent.analysis.summary}</p>
                 {medicalReportContent.analysis.warnings.length > 0 && (
                   <div className="mt-4 space-y-2">
                     {medicalReportContent.analysis.warnings.map((warning, index) => (
@@ -465,15 +524,19 @@ const App = () => {
           </div>
 
           {/* Forensic Report Submission */}
-          <div className="bg-gray-800 p-6 rounded-xl shadow-inner">
+          <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl">
             <h3 className="text-xl font-semibold mb-4 text-white">Forensic Report Analysis</h3>
-            <p className="text-gray-400 mb-4">Upload a forensic report (.txt file) for AI analysis.</p>
-            <input type="file" onChange={handleForensicReportUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100" />
-            {loading && <p className="mt-4 text-rose-400">Analyzing report...</p>}
+            <p className="text-gray-300 mb-4">Upload a forensic report (.txt file) for AI analysis.</p>
+            <input
+              type="file"
+              onChange={handleForensicReportUpload}
+              className="block w-full text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer"
+            />
+            {loading && <p className="mt-4 text-blue-300">Analyzing report...</p>}
             {forensicReportContent && (
-              <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-                <p className="font-bold text-lg mb-2 text-rose-300">AI Analysis of Forensic Report</p>
-                <p className="text-gray-300">{forensicReportContent.analysis.summary}</p>
+              <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
+                <p className="font-bold text-lg mb-2 text-blue-300">AI Analysis of Forensic Report</p>
+                <p className="text-gray-200">{forensicReportContent.analysis.summary}</p>
                 {forensicReportContent.analysis.warnings.length > 0 && (
                   <div className="mt-4 space-y-2">
                     {forensicReportContent.analysis.warnings.map((warning, index) => (
@@ -486,38 +549,43 @@ const App = () => {
           </div>
 
           {/* Judgment Analysis */}
-          <div className="bg-gray-800 p-6 rounded-xl shadow-inner">
+          <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl">
             <h3 className="text-xl font-semibold mb-4 text-white">Judicial Guidance Assistant</h3>
             <p className="text-gray-400 mb-4">Upload a court judgment (.txt file) for analysis.</p>
-            <input type="file" onChange={handleJudgementUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100" />
-            {loading && <p className="mt-4 text-rose-400">Analyzing judgment...</p>}
+            <input
+              type="file"
+              onChange={handleJudgementUpload}
+              className="block w-full text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer"
+            />
+            {loading && <p className="mt-4 text-blue-300">Analyzing judgment...</p>}
             {judgementAnalysis && (
-              <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-                <div dangerouslySetInnerHTML={{ __html: judgementAnalysis }} />
+              <div className="mt-6 p-4 bg-white/10 rounded-lg border border-white/20">
+                <p className="font-bold text-lg mb-2 text-blue-300">AI Analysis of Judgment</p>
+                <SafeHTML html={judgementAnalysis} />
               </div>
             )}
           </div>
 
-          {/* Document Generation */}
-          <div className="bg-gray-800 p-6 rounded-xl shadow-inner">
+      {/* Document Generation */}
+      <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl">
             <h3 className="text-xl font-semibold mb-4 text-white">Document Generation</h3>
             <p className="text-gray-400 mb-4">Auto-generate standardized documents based on case details.</p>
             <div className="flex space-x-4">
               <button
                 onClick={() => generateMockDocument('case-diary')}
-                className="flex-1 py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg transition-colors duration-300"
+        className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Case Diary
               </button>
               <button
                 onClick={() => generateMockDocument('charge-sheet')}
-                className="flex-1 py-3 px-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300"
+        className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Charge Sheet
               </button>
               <button
                 onClick={() => generateMockDocument('final-report')}
-                className="flex-1 py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition-colors duration-300"
+        className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Final Report
               </button>
@@ -542,16 +610,18 @@ const App = () => {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen font-sans">
-      <style>{`
-        body { font-family: 'Inter', sans-serif; background-color: #111827; }
-        ::-webkit-file-upload-button {
-          cursor: pointer;
-        }
-      `}</style>
+    <div className="min-h-screen font-sans">
+      {/* Removed global body override so gradients show correctly */}
       {renderView()}
     </div>
   );
 };
 
 export default App;
+
+// Rendering the app
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);

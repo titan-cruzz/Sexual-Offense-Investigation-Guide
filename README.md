@@ -1,7 +1,7 @@
 
 # Sexual Offense Investigation Guide
 
-This project is a digital guide for investigating sexual offenses. It provides a step-by-step process for law enforcement officers and other professionals to follow when conducting these sensitive investigations.
+This is a React + Vite app that provides an AI‑assisted guide for sexual offense investigations. It helps ensure legal compliance, suggests SOP steps, and generates investigation documents.
 
 ## Features
 
@@ -12,34 +12,34 @@ This project is a digital guide for investigating sexual offenses. It provides a
 
 ## Getting Started
 
-To get started with the Sexual Offense Investigation Guide, you will need to have the following installed:
+Requirements:
+- Node.js 18+ (https://nodejs.org/)
 
-*   [Node.js](https://nodejs.org/)
-*   [Python](https://www.python.org/)
+Install and run:
 
-Once you have these installed, you can clone the repository and install the dependencies:
-
-```
+```bash
 git clone https://github.com/titan-cruzz/Sexual-Offense-Investigation-Guide.git
 cd Sexual-Offense-Investigation-Guide
 npm install
-pip install -r requirements.txt
+npm run dev
 ```
 
-## Usage
+## Scripts
 
-To start the application, run the following command:
+- `npm run dev` – Start the Vite dev server (http://localhost:5173)
+- `npm run build` – Build for production into `dist/`
+- `npm run preview` – Preview the production build locally
 
-```
-npm start
-```
+## Tech
 
-This will start the development server and open the application in your browser.
+- React 18, Vite 7
+- Tailwind CSS (via @tailwindcss/postcss)
 
-## Contributing
+## Notes
 
-Contributions to the Sexual Offense Investigation Guide are welcome. Please read our [contributing guidelines](CONTRIBUTING.md) for more information.
+- Styling uses Tailwind; see `index.css`, `tailwind.config.js`, and `postcss.config.js`.
+- The app’s entry point is `index.html` which loads `main.jsx` and mounts into `#root`.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+MIT
