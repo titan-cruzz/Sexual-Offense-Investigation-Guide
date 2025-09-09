@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import ChatWidget from './components/ChatWidget.jsx';
 
 // Safe rendering of judgementAnalysis to avoid raw HTML injection
 const SafeHTML = ({ html }) => {
@@ -13,10 +14,13 @@ const SafeHTML = ({ html }) => {
 const App = () => {
   const [view, setView] = useState('home');
   const [currentCase, setCurrentCase] = useState(null);
+  const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [judgementAnalysis, setJudgementAnalysis] = useState(null);
   const [medicalReportContent, setMedicalReportContent] = useState(null);
   const [forensicReportContent, setForensicReportContent] = useState(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   // Simulated data and AI logic
   const mockSops = {
@@ -195,6 +199,23 @@ const App = () => {
       console.error('Failed to open new window for document generation.');
     }
   };
+  // Persist cases to localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('soig_cases');
+      if (raw) setCases(JSON.parse(raw));
+    } catch (e) {
+      console.warn('Failed to load cases from storage', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('soig_cases', JSON.stringify(cases));
+    } catch (e) {
+      console.warn('Failed to save cases to storage', e);
+    }
+  }, [cases]);
 
   const handleNewCase = (event) => {
     event.preventDefault();
@@ -230,11 +251,23 @@ const App = () => {
     };
 
     setTimeout(() => {
+      // If editing an existing case, update it; otherwise append
+      if (editingIndex !== null && typeof editingIndex === 'number') {
+        setCases(prev => {
+          const copy = [...prev];
+          copy[editingIndex] = newCaseData;
+          return copy;
+        });
+      } else {
+        setCases(prev => [...prev, newCaseData]);
+      }
+
       setCurrentCase(newCaseData);
       setView('case');
       setLoading(false);
       setMedicalReportContent(null);
       setForensicReportContent(null);
+      setEditingIndex(null);
     }, 1000);
   };
   
@@ -336,7 +369,7 @@ const App = () => {
         <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
           A specialized digital assistant to strengthen sexual offence investigations by ensuring legal compliance, integrating judicial guidance, and improving conviction rates.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+  <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => setView('newCaseForm')}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center justify-center"
@@ -347,7 +380,7 @@ const App = () => {
             Start a New Case
           </button>
           <button
-            onClick={() => alert('Feature coming soon!')}
+            onClick={() => setView('cases')}
             className="border-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             View Existing Cases
@@ -367,31 +400,31 @@ const App = () => {
           <h2 className="text-3xl font-bold text-white mb-2">New Sexual Offence Case</h2>
           <p className="text-gray-300">Enter the case details to generate an investigation guide</p>
         </div>
-        <form onSubmit={handleNewCase} className="space-y-6">
+    <form onSubmit={handleNewCase} className="space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="firNumber" className="block text-sm font-medium text-gray-200">FIR Number</label>
-              <input type="text" id="firNumber" name="firNumber" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter FIR Number" />
+      <input defaultValue={editingIndex !== null ? cases[editingIndex].firNumber : ''} type="text" id="firNumber" name="firNumber" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter FIR Number" />
             </div>
             <div>
               <label htmlFor="station" className="block text-sm font-medium text-gray-200">Police Station</label>
-              <input type="text" id="station" name="station" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Police Station" />
+      <input defaultValue={editingIndex !== null ? cases[editingIndex].station : ''} type="text" id="station" name="station" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Police Station" />
             </div>
             <div>
               <label htmlFor="victimName" className="block text-sm font-medium text-gray-200">Victim's Name</label>
-              <input type="text" id="victimName" name="victimName" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Victim's Name" />
+      <input defaultValue={editingIndex !== null ? cases[editingIndex].victimName : ''} type="text" id="victimName" name="victimName" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Victim's Name" />
             </div>
             <div>
               <label htmlFor="accusedName" className="block text-sm font-medium text-gray-200">Accused's Name</label>
-              <input type="text" id="accusedName" name="accusedName" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Accused's Name" />
+      <input defaultValue={editingIndex !== null ? cases[editingIndex].accusedName : ''} type="text" id="accusedName" name="accusedName" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="Enter Accused's Name" />
             </div>
             <div>
               <label htmlFor="dateOfOffence" className="block text-sm font-medium text-gray-200">Date of Offence</label>
-              <input type="date" id="dateOfOffence" name="dateOfOffence" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" />
+      <input defaultValue={editingIndex !== null ? cases[editingIndex].dateOfOffence : ''} type="date" id="dateOfOffence" name="dateOfOffence" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" />
             </div>
             <div>
               <label htmlFor="sections" className="block text-sm font-medium text-gray-200">Sections of Law</label>
-              <input type="text" id="sections" name="sections" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="e.g. BNS 69, POCSO Act 3, IT Act 67B" />
+      <input defaultValue={editingIndex !== null ? cases[editingIndex].sections.join(', ') : ''} type="text" id="sections" name="sections" required className="mt-1 block w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm" placeholder="e.g. BNS 69, POCSO Act 3, IT Act 67B" />
             </div>
           </div>
           <button
@@ -419,6 +452,40 @@ const App = () => {
             ← Back to Home
           </button>
         </form>
+      </div>
+    </div>
+  );
+
+  const CasesListView = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white p-8">
+      <div className="flex items-center mb-6">
+        <button onClick={() => setView('home')} className="flex items-center text-gray-300 hover:text-blue-400 transition-colors duration-200 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Back to Home
+        </button>
+      </div>
+
+      <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
+        <h2 className="text-2xl font-bold mb-4">Open Cases</h2>
+        {cases.length === 0 ? (
+          <p className="text-gray-300">No open cases yet. Create a new case to get started.</p>
+        ) : (
+          <div className="space-y-4">
+            {cases.map((c, idx) => (
+              <div key={idx} className="bg-white/5 p-4 rounded-lg flex items-start justify-between">
+                <div>
+                  <div className="text-lg font-semibold">FIR: {c.firNumber} — {c.victimName} vs {c.accusedName}</div>
+                  <div className="text-sm text-gray-300">Station: {c.station} • Sections: {c.sections.join(', ')}</div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button onClick={() => { setCurrentCase(c); setView('case'); }} className="px-3 py-2 bg-blue-600 rounded text-white">Open</button>
+                  <button onClick={() => { setEditingIndex(idx); setView('newCaseForm'); }} className="px-3 py-2 bg-yellow-500 rounded text-white">Edit</button>
+                  <button onClick={() => { if (confirm('Delete this case?')) { setCases(prev => prev.filter((_,i) => i !== idx)); } }} className="px-3 py-2 bg-red-600 rounded text-white">Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -613,6 +680,18 @@ const App = () => {
     <div className="min-h-screen font-sans">
       {/* Removed global body override so gradients show correctly */}
       {renderView()}
+
+      {/* Chat toggle */}
+      <div>
+        <button
+          onClick={() => setChatOpen((s) => !s)}
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-2xl flex items-center justify-center z-40"
+          aria-label="Open chat"
+        >
+          {chatOpen ? '💬' : '🤖'}
+        </button>
+        <ChatWidget open={chatOpen} onClose={() => setChatOpen(false)} />
+      </div>
     </div>
   );
 };
